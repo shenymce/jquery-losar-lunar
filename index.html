@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <title>万年历</title>
+    <link rel="stylesheet" href="css/swiper.css" />
+    <style>
+        .dateValue{
+            width: 100%;
+            line-height: 30px;
+            text-align: center;
+            outline: none;
+        }
+        .xp1{
+            display: none;
+            position: fixed;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="xp1" style="display: none"> </div>
+<input type="text" title="" class="dateValue">
+</body>
+<!-- build:js -->
+<script src="js/jquery-2.0.3.min.js" type="application/javascript"></script>
+<script src="js/jquery-solarlunar.js" type="application/javascript"></script>
+<script src="js/swiper.js" type="application/javascript"></script>
+<script>
+    var option = {type: "solar",textObj:"dateValue"};
+    $(".xp1").solarlunar(option);
+</script>
+<!-- endbuild  -->
+</html>

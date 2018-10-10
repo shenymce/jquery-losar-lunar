@@ -1,0 +1,57 @@
+.swiper-wrapper{
+    height: 30px;
+    text-align: center;
+    line-height: 90px;
+}
+.swiper-slide{
+    line-height: 30px;
+    -webkit-user-select: none;
+    user-select: none;
+    -moz-user-select: none;
+}
+.swiper-container{
+    width: 50%;
+    height: 100px;
+    display: block;
+    flex: 1;
+}
+.calendar-date{
+    position: relative;
+    display: flex;
+    border:1px solid #f0ad4e;
+}
+.calendar-nav{
+    display: flex;
+    width: 100%;
+}
+.calendar-item{
+    flex: 1;
+    text-align: center;
+    line-height: 30px;
+    background: #f00;
+    color: #fff;
+}
+.calendar-item.active{
+    background: #f0ad4e;
+}
+.calendar-date .calendar-active{
+    position: absolute;
+    height: 30px;
+    width: 100%;
+    top: 35px;
+    background: rgba(0,0,0,.1);
+    border:1px solid #333;
+    border-left: none;
+    border-right: none;
+
+}
+.solar ,.lunar{
+    width: 100%;
+    display: flex;
+}
+.calendar-btn-submit{
+    text-align: center;
+    background: #0BB908;
+    color: #fff;
+    line-height: 35px;
+}
