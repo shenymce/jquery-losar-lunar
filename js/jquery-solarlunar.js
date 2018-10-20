@@ -1,63 +1,66 @@
-var solarlunar_num = 0;
-$(document).find("head").append('<link rel="stylesheet" href="css/lunarcalendar.css" />\n');
 (function($) {
+	$("head").append('<link rel="stylesheet" href="css/lunarcalendar.css" />')
     var myDate = new Date();
     var dayue = ['初一', '初二', '初三', '初四', '初五', '初六', '初七', '初八', '初九', '初十', '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十', '廿一', '廿二', '廿三', '廿四', '廿五', '廿六', '廿七', '廿八', '廿九', '三十', ];
     $.fn.solarlunar = function(opts) {
-        solarlunar_num++;
+        opts.index = opts.index||1;
         var obj = $(this);
-        var option = $.extend({}, $.fn.solarlunar.default, opts);
-        var $obj = $("."+opts.textObj);
-        if( $obj.data("solar")){
+        obj.option = $.extend({}, $.fn.solarlunar.default, opts);
+        obj.$obj = $("."+opts.textObj);
+        if( obj.$obj.data("solar")){
             var solarArr = $obj.data("solar").split("-");
             var lunarArr = $obj.data("lunar").split("-");
-            option.year = solarArr[0];
-            option.month = solarArr[1];
-            option.day = solarArr[2];
-            option.lyear = lunarArr[0];
-            option.lmonth = lunarArr[1];
-            option.lday = lunarArr[2];
+            obj.option.year = solarArr[0];
+            obj.option.month = solarArr[1];
+            obj.option.day = solarArr[2];
+            obj.option.lyear = lunarArr[0];
+            obj.option.lmonth = lunarArr[1];
+            obj.option.lday = lunarArr[2];
         }
-        $obj.click(function () {
-            obj.fadeIn()
-            obj.css("top",$(this).height()+$(this).offset().top+10);
+        obj.$obj.click(function () {
+            obj.show()
+            $("body").css({"height":"100vh","overflow":"hidden"});
+            obj.parent().addClass("date-container");
             go();
         })
-        var lunYear = ["零","一","二","三","四","五","六","七","八","九"]
-        var minyear = option.minyear < 1900 ? 1900 : option.minyear;
-        var maxyear = option.maxyear > 2100 ? 2100 : option.maxyear;
-        var html = '<div class="calendar-nav"><div class="calendar-item calendar' + solarlunar_num + '" data-value="1">公历</div><div class="calendar-item calendar' + solarlunar_num + '" data-value="2">农历</div></div>\n' +
+        obj.lunYear = ["零","一","二","三","四","五","六","七","八","九"]
+        obj.minyear =  obj.option.minyear < 1900 ? 1900 :  obj.option.minyear;
+        obj.maxyear =  obj.option.maxyear > 2100 ? 2100 :  obj.option.maxyear;
+        obj.html1 = '<div class="calendar-nav"><div class="calendar-item calendar' + opts.index + '" data-value="1">公历</div><div class="calendar-item calendar' + opts.index + '" data-value="2">农历</div></div>\n' +
             '<div class="calendar-date">' +
             '<div class="calendar-active"></div>' +
             '<div class="calendar" style="width: 100%">\n' +
             '</div>' +
             '</div>' +
-            '<div class="calendar-btn-submit">确定</div>';
-        obj.html(html);
+            '<div class="calendar-btn-submit btn-active">确定</div>';
+        obj.html(obj.html1);
         $(".calendar-btn-submit").click(function () {
-            obj.fadeOut();
+            obj.hide();
+            $("body").css({"height":"auto","overflow":"auto"});
+            obj.parent().removeClass("date-container");
         });
-        var solarYearSw,lunarYearSw;
-        var solarMonthSw,lunarMonthSw;
-        var solarDaySw,lunarDaySw;
+        obj.solarYearSw,obj.lunarYearSw;
+        obj.solarMonthSw,obj.lunarMonthSw;
+        obj.solarDaySw,obj.lunarDaySw;
 
-        var html
-        var year = [];
-        for (var i = minyear, j = 0; i <= maxyear; i++, j++) {
-            year[j] = i;
+        obj.html1 = "";
+        obj.year = [];
+        for (var i = obj.minyear, j = 0; i <= obj.maxyear; i++, j++) {
+            obj.year[j] = i;
         }
-        if(opts.direction=="up"){
-            year.reverse();
+        //改变方向
+        if( opts.direction=="up"){
+            obj.year.reverse();
         }
 
         function init(option) {
             if (option.type === 'solar') {
-                html = '\t<div class="solar">' +
-                    '\t\t<div class="year swiper-container" id="solarYear">\n' +
+                var html = '\t<div class="solar">' +
+                    '\t\t<div class="year swiper-container" id="solarYear'+opts.index+'">\n' +
                     '\t\t<div class="swiper-wrapper">' +
                     '\t\t</div>\n' +
                     '\t\t</div>\n' +
-                    '\t\t<div class="month swiper-container" id="solarMonth" >\n' +
+                    '\t\t<div class="month swiper-container" id="solarMonth'+opts.index+'" >\n' +
                     '\t\t<div class="swiper-wrapper">' +
                     '\t\t\t<div class="swiper-slide" data-value="1">1月</div>\n' +
                     '\t\t\t<div class="swiper-slide" data-value="2">2月</div>\n' +
@@ -72,152 +75,213 @@ $(document).find("head").append('<link rel="stylesheet" href="css/lunarcalendar.
                     '\t\t\t<div class="swiper-slide" data-value="11">11月</div>\n' +
                     '\t\t\t<div class="swiper-slide" data-value="12">12月</div>\n' +
                     '\t\t</div>\n' +
-                    '\t\t</div>\n' +
-                    '\t\t<div class="day swiper-container" id="solarDay" >\n' +
+                    '\t\t</div>\n';
+                html += '\t\t<div class="day swiper-container" id="solarDay'+opts.index+'" >\n' +
                     '\t\t<div class="swiper-wrapper">' +
-                    '\t\t</div>' +
                     '\t\t</div>\n' +
-                    '\t</div>';
+                    '\t\t</div>\n';
+                if(opts.time){
+                    html += '\t\t<div class="time swiper-container swiper-time" id="solarTime'+opts.index+'" >\n' +
+                        '\t\t<div class="swiper-wrapper">' +
+                        '\t\t</div>\n' +
+                        '\t\t</div>\n';
+                }
+                html += '\t</div>';
                 obj.find(".calendar").html(html);
                 initSolarYear();
                 initSolarMonth();
                 initSolarDay();
-                $(".calendar-item").eq(0).addClass("active");
-                $(".calendar-item").eq(1).removeClass("active");
+                initSolarTime();
+                obj.find(".calendar-item").eq(0).addClass("active");
+                obj.find(".calendar-item").eq(1).removeClass("active");
             } else {
-                html = '\t<div class="lunar">\n' +
-                    '\t\t<div class="lyear swiper-container" id="lunarYear" >\n' +
+                var html = '\t<div class="lunar">\n' +
+                    '\t\t<div class="lyear swiper-container" id="lunarYear'+opts.index+'" >\n' +
                     '\t\t<div class="swiper-wrapper">' +
                     '\t\t</div>\n' +
                     '\t\t</div>\n' +
-                    '\t\t<div class="lmonth swiper-container" id="lunarMonth" >\n' +
+                    '\t\t<div class="lmonth swiper-container" id="lunarMonth'+opts.index+'" >\n' +
                     '\t\t<div class="swiper-wrapper">' +
                     '\t\t</div>\n' +
-                    '\t\t</div>\n' +
-                    '\t\t<div class="lday swiper-container" id="lunarDay" >\n' +
+                    '\t\t</div>\n';
+                html += '\t\t<div class="lday swiper-container" id="lunarDay'+opts.index+'" >\n' +
                     '\t\t<div class="swiper-wrapper">' +
                     '\t\t</div>\n' +
-                    '\t\t</div>\n' +
-                    '\t</div>\n';
+                    '\t\t</div>\n';
+                if(opts.time) {
+                    html += '\t\t<div class="ltime swiper-container" id="lunarTime' + opts.index + '" >\n' +
+                        '\t\t<div class="swiper-wrapper">' +
+                        '\t\t</div>\n' +
+                        '\t\t</div>\n';
+                }
+                html += '\t</div>\n';
                 obj.find(".calendar").html(html);
                 getNongli();
                 initLunarYear();
                 initLunarMonth();
                 initLunarDay();
-                $(".calendar-item").eq(0).removeClass("active");
-                $(".calendar-item").eq(1).addClass("active");
+                initLunarTime();
+                obj.find(".calendar-item").eq(0).removeClass("active");
+                obj.find(".calendar-item").eq(1).addClass("active");
 
             }
         }
 
         function go(){
-            $(".calendar" + solarlunar_num + "").on("click", function() {
+            $(".calendar" + opts.index + "").on("click", function() {
                 if ($(this).data("value") == 1) {
-                    option.type = "solar";
-                    init(option)
+                    obj.option.type = "solar";
+                    init(obj.option)
                 } else {
-                    option.type = "lunar";
-                    init(option)
+                    obj.option.type = "lunar";
+                    init(obj.option)
                 }
                 setValue();
             });
 
-            init(option);
+            init(obj.option);
         }
 
         function getNongli() {
-            var nongli = solarToLunar(option.year,option.month,option.day)
-            option.lyear = nongli[0];
-            option.lmonth = nongli[1];
-            option.lday = nongli[2];
+            var nongli = solarToLunar( obj.option.year, obj.option.month, obj.option.day, obj.option.time)
+            obj.option.lyear = nongli[0];
+            obj.option.lmonth = nongli[1];
+            obj.option.lday = nongli[2];
         }
 
+        // 新历初始化
         function initSolarYear(){
-            $.each(year, function(index, value) {
+            $.each( obj.year, function(index, value) {
                 obj.find(".year .swiper-wrapper").append('<div class="swiper-slide" data-value="' + value + '">' + value + '</div>');
             });
-            solarYearSw = swipers("solarYear")
-            solarYearSw.on("slideChange",function () {
-                option.year =  obj.find(".year .swiper-slide").eq(solarYearSw.activeIndex).data("value");
+            obj.solarYearSw = swipers("solarYear"+opts.index)
+            obj.solarYearSw.on("slideChange",function () {
+                obj.option.year =   obj.find(".year .swiper-slide").eq( obj.solarYearSw.activeIndex).data("value");
                 initSolarMonth();
                 initSolarDay();
+                initSolarTime();
                 setValue();
             });
         }
+
         function initSolarMonth(){
-            myDate.setFullYear(option.year, option.month, 0);
+            myDate.setFullYear( obj.option.year,  obj.option.month, 0);
             var lastDay = myDate.getDate();
             obj.find(".day .swiper-wrapper").html("")
             for (var i = 1; i <= lastDay; i++) {
                 obj.find(".day .swiper-wrapper").append('<div class="swiper-slide" data-value="' + i + '">' + i + '日</div>');
             }
-            var solarM = swipers("solarMonth")
+            var solarM = swipers("solarMonth"+opts.index)
             solarM.on("slideChange", function () {
-                option.month = obj.find(".month .swiper-slide").eq(solarM.activeIndex).data("value");
+                obj.option.month = obj.find(".month .swiper-slide").eq(solarM.activeIndex).data("value");
                 initSolarDay();
+                initSolarTime();
                 setValue();
             });
-            solarMonthSw = solarM;
+            obj.solarMonthSw = solarM;
         }
+        
         function initSolarDay(){
-            var solarD = swipers("solarDay")
+            var solarD = swipers("solarDay"+opts.index)
             solarD.on("slideChange", function () {
-                option.day = obj.find(".day .swiper-slide").eq(solarD.activeIndex).data("value");
-                solarDaySw = solarD;
+                obj.option.day = obj.find(".day .swiper-slide").eq(solarD.activeIndex).data("value");
+                obj.solarDaySw = solarD;
+                initSolarTime();
                 setValue();
             });
-            solarDaySw =solarD;
-            setActive(obj.find(".year .swiper-slide"),option.year,solarYearSw);
-            setActive(obj.find(".month .swiper-slide"),option.month,solarMonthSw);
-            setActive(obj.find(".day .swiper-slide"),option.day,solarDaySw);
+            obj.solarDaySw =solarD;
+        }
+
+        function initSolarTime(){
+            let shichen = ["","23:00-00:59", "01:00-02:59", "03:00-04:59", "05:00-06:59", "07:00-08:59", "09:00-10:59", "11:00-12:59", "13:00-14:59", "15:00-16:59", "17:00-18:59", "19:00-20:59", "21:00-22:59"];
+            let lunarshichen = ["","子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+            obj.find(".time .swiper-wrapper").html("")
+            for (var i = 1; i <= shichen.length; i++) {
+                obj.find(".time .swiper-wrapper").append('<div class="swiper-slide" data-value="' + i + '" data-lunarshi="' + lunarshichen[i-1] + '">' + shichen[i-1] + '</div>');
+            }
+            let solarT = swipers("solarTime"+opts.index)
+            solarT.on("slideChange", function () {
+                obj.option.time = obj.find(".time .swiper-slide").eq(solarT.activeIndex).data("value");
+                obj.solarTimeSw = solarT;
+                setValue();
+            });
+            obj.solarTimeSw =solarT;
+            setActive(obj.find(".year .swiper-slide"), obj.option.year, obj.solarYearSw);
+            setActive(obj.find(".month .swiper-slide"), obj.option.month, obj.solarMonthSw);
+            setActive(obj.find(".day .swiper-slide"), obj.option.day, obj.solarDaySw);
+            setActive(obj.find(".time .swiper-slide"), obj.option.time, obj.solarTimeSw);
             setValue();
         }
 
+        // 农历初始化
         function initLunarYear(){
-            $.each(year, function(index, value) {
+            $.each( obj.year, function(index, value) {
                 value = value+"";
-                var lunyear = lunYear[value[0]]+lunYear[value[1]]+lunYear[value[2]]+lunYear[value[3]];
+                var lunyear = obj.lunYear[value[0]]+obj.lunYear[value[1]]+obj.lunYear[value[2]]+obj.lunYear[value[3]];
                 obj.find(".lyear .swiper-wrapper").append('<div class="swiper-slide" data-value="' + value + '">' + lunyear + '</div>');
             });
-            lunarYearSw = swipers("lunarYear")
-            lunarYearSw.on("slideChange",function () {
-                option.lyear =  obj.find(".lyear .swiper-slide").eq(lunarYearSw.activeIndex).data("value");
+            obj.lunarYearSw = swipers("lunarYear"+opts.index)
+            obj.lunarYearSw.on("slideChange",function () {
+                obj.option.lyear =  obj.find(".lyear .swiper-slide").eq( obj.lunarYearSw.activeIndex).data("value");
                 initLunarMonth();
                 initLunarDay();
+                initLunarTime();
                 setValue();
             });
         }
+
         function initLunarMonth(){
-            var lm = lunarMonth(option.lyear);
+            var lm = lunarMonth( obj.option.lyear);
             obj.find(".lmonth .swiper-wrapper").html("");
             $.each(lm, function(index, value) {
                 obj.find(".lmonth .swiper-wrapper").append('<div class="swiper-slide" data-value="' + (index+1) + '">' + value + '</div>');
             });
-            var lunarM = swipers("lunarMonth")
+            var lunarM = swipers("lunarMonth"+opts.index)
             lunarM.on("slideChange", function () {
-                option.lmonth = obj.find(".lmonth .swiper-slide").eq(lunarM.activeIndex).data("value");
+                obj.option.lmonth = obj.find(".lmonth .swiper-slide").eq(lunarM.activeIndex).data("value");
                 initLunarDay();
+                initLunarTime();
                 setValue();
             });
-            lunarMonthSw = lunarM;
+            obj.lunarMonthSw = lunarM;
         }
+
         function initLunarDay(){
-            var ld = lunarLastDay(option.lyear, option.lmonth);
+            var ld = lunarLastDay(obj.option.lyear, obj.option.lmonth);
             obj.find(".lday .swiper-wrapper").html("");
             $.each(ld, function(index, value) {
                 obj.find(".lday .swiper-wrapper").append('<div class="swiper-slide" data-value="' + (index+1) + '">' + value + '</div>');
             });
-            var lunarD = swipers("lunarDay")
+            var lunarD = swipers("lunarDay"+opts.index)
             lunarD.on("slideChange", function () {
-                option.lday = obj.find(".lday .swiper-slide").eq(lunarD.activeIndex).data("value");
-                lunarDaySw = lunarD;
+                obj.option.lday = obj.find(".lday .swiper-slide").eq(lunarD.activeIndex).data("value");
+                obj.lunarDaySw = lunarD;
+                initLunarTime();
                 setValue();
             });
-            lunarDaySw =lunarD;
-            setActive(obj.find(".lyear .swiper-slide"),option.lyear,lunarYearSw);
-            setActive(obj.find(".lmonth .swiper-slide"),option.lmonth,lunarMonthSw);
-            setActive(obj.find(".lday .swiper-slide"),option.lday,lunarDaySw);
+            obj.lunarDaySw =lunarD;
         }
+
+        function initLunarTime(){
+            let shichen = ["","子时","丑时","寅时","卯时","辰时","巳时","午时","未时","申时","酉时","戌时","亥时"];
+            let lunarshichen = ["","子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+            obj.find(".ltime .swiper-wrapper").html("");
+            for (let i = 1; i <= shichen.length; i++) {
+                obj.find(".ltime .swiper-wrapper").append('<div class="swiper-slide" data-value="' + i + '" data-lunarshi="' + lunarshichen[i-1] + '">' + shichen[i-1] + '</div>');
+            }
+            var lunarT = swipers("lunarTime"+opts.index)
+            lunarT.on("slideChange", function () {
+                obj.option.time = obj.find(".ltime .swiper-slide").eq(lunarT.activeIndex).data("value");
+                obj.lunarTimeSw = lunarT;
+                setValue();
+            });
+            obj.lunarTimeSw =lunarT;
+            setActive(obj.find(".lyear .swiper-slide"), obj.option.lyear, obj.lunarYearSw);
+            setActive(obj.find(".lmonth .swiper-slide"), obj.option.lmonth, obj.lunarMonthSw);
+            setActive(obj.find(".lday .swiper-slide"), obj.option.lday, obj.lunarDaySw);
+            setActive(obj.find(".ltime .swiper-slide"), obj.option.time, obj.lunarTimeSw);
+        }
+
         function swipers(obj) {
             var swiper = new Swiper('#'+obj, {
                 direction : 'vertical',
@@ -245,31 +309,45 @@ $(document).find("head").append('<link rel="stylesheet" href="css/lunarcalendar.
         }
 
         function setValue() {
-            if (option.type === 'solar') {
-                var nian = $(".year .swiper-slide").eq(solarYearSw.activeIndex).data("value") + '年';
-                var yue = $(".month .swiper-slide").eq(option.month-1).text();
-                var ri = $(".day .swiper-slide").eq(option.day-1).text();
-                var lun = solarToLunar(option.year,option.month,option.day)
+            if ( obj.option.type === 'solar') {
+                var nian = $(".year .swiper-slide").eq( obj.solarYearSw.activeIndex).data("value") + '年';
+                var yue = $(".month .swiper-slide").eq( obj.option.month-1).text();
+                var ri = $(".day .swiper-slide").eq( obj.option.day-1).text();
+                var solarshi = $(".time .swiper-slide").eq( obj.option.time-1).text();
+                var lunarshi = $(".time .swiper-slide").eq( obj.option.time-1).data("lunarshi");
+                var lun = solarToLunar( obj.option.year, obj.option.month, obj.option.day, obj.option.time)
                 var lunar = lun.join("-");
-                var solar = option.year+"-"+option.month+"-"+option.day;
-                $("."+opts.textObj).val(nian + yue + ri)
-                    .text(nian + yue + ri)
+                var solar =  obj.option.year+"-"+ obj.option.month+"-"+ obj.option.day;
+                // 给input 增加data属性
+                var val = nian + yue + ri ;
+                if(opts.time){
+                    val += solarshi;
+                }
+                $("."+ opts.textObj).val(val)
+                    .text(val)
                     .attr("data-solar",solar)
-                    .attr("data-lunar",lunar);
+                    .attr("data-lunar",lunar)
+                    .attr("data-shichen",solarshi)
+                    .attr("data-lunarshichen",lunarshi);
             } else {
-                var nian = $(".lyear .swiper-slide").eq(lunarYearSw.activeIndex).text() + '年';
-                var yue = $(".lmonth .swiper-slide").eq(option.lmonth-1).text();
-                var ri = $(".lday .swiper-slide").eq(option.lday-1).text();
-                var sol = lunarToSolar(option.lyear,option.lmonth,option.lday)
+                var nian = $(".lyear .swiper-slide").eq( obj.lunarYearSw.activeIndex).text() + '年';
+                var yue = $(".lmonth .swiper-slide").eq( obj.option.lmonth-1).text();
+                var ri = $(".lday .swiper-slide").eq( obj.option.lday-1).text();
+                var lunarshi = $(".ltime .swiper-slide").eq( obj.option.time-1).data("lunarshi");
+                var sol = lunarToSolar( obj.option.lyear, obj.option.lmonth, obj.option.lday, obj.option.time)
                 var solar = sol.join("-");
-                var lunar = option.lyear+"-"+option.lmonth+"-"+option.lday;
-                $("."+opts.textObj).val(nian + yue + ri)
-                    .text(nian + yue + ri)
+                var lunar =  obj.option.lyear+"-"+ obj.option.lmonth+"-"+ obj.option.lday;
+                var val = nian + yue + ri ;
+                if(opts.time){
+                    val += lunarshi+"时"
+                }
+                $("."+ opts.textObj).val(val)
+                    .text(val)
                     .attr("data-solar",solar)
-                    .attr("data-lunar",lunar);
+                    .attr("data-lunar",lunar)
+                    .attr("data-lunarshichen",lunarshi);
             }
         }
-
     }
     $.lunarInfo = {
         1900: [8, 1, 30, 19304],
@@ -600,6 +678,7 @@ $(document).find("head").append('<link rel="stylesheet" href="css/lunarcalendar.
         day: myDate.getDate(),
         lyear: myDate.getFullYear(),
         lmonth: myDate.getMonth(),
-        lday: 1
+        lday: 1,
+        time: 1
     };
 })(jQuery);
