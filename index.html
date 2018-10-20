@@ -6,7 +6,7 @@
     <title>万年历</title>
     <link rel="stylesheet" href="css/swiper.css" />
     <style>
-        .vdate{
+        .vdate,.nvdate{
             width: 100%;
             line-height: 30px;
             text-align: center;
@@ -20,6 +20,10 @@
 <div class="wnl">
 	<div class="nan dateValue"></div>
 </div>
+<input type="text" title="" class="nvdate">
+<div class="wn2">
+	<div class="nv dateValue"></div>
+</div>
 </body>
 <!-- build:js -->
 <script src="js/jquery-2.0.3.min.js" type="application/javascript"></script>
@@ -28,6 +32,8 @@
 <script>
     var option = {type: "solar",textObj:"vdate"};
     $(".nan").solarlunar(option);
+	var option1 = {type: "solar",textObj:"nvdate",time:true};
+    $(".nv").solarlunar(option1);
 </script>
 <!-- endbuild  -->
 </html>
